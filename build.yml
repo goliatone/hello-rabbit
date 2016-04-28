@@ -2,7 +2,7 @@ hello-rabbit:
   registry: dockerhub
   registryUser: goliatone
   after-build:
-    - ls -la
+    - /true
   notify:
     - github
   publish:
