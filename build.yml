@@ -1,0 +1,11 @@
+hello-rabbit:
+  registry: dockerhub
+  registryUser: goliatone
+  after-build:
+    - ls -la
+  notify:
+    - github
+  publish:
+    -
+      to: nullpublisher
+      copy: /src/README.md
