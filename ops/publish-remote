@@ -1,0 +1,25 @@
+#!/bin/bash
+
+ID=hello-rabbit
+TAG=latest
+
+cd ~/CODE/$ID
+
+echo "Updating local repository..."
+git pull
+
+
+CONTAINERS=$(docker ps -q)
+
+if [ -n "$CONTAINERS" ]; then
+    echo "Stoping running containers $CONTAINERS"
+    ! docker stop $CONTAINERS
+else
+    echo "No containers to remove."
+fi
+
+echo "docker build goliatone/$ID..."
+docker build --rm -t goliatone/$ID .
+
+echo "docker push goliatone/$ID..."
+docker push goliatone/$ID:$TAG
