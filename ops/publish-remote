@@ -1,25 +1,50 @@
 #!/bin/bash
 
-ID=hello-rabbit
+ID=goliatone/hello-rabbit
 TAG=latest
+TARGET_DIR=/tmp/$(cat /proc/sys/kernel/random/uuid)
 
-cd ~/CODE/$ID
+#######################################
+# GET CLI ARGUMENTS
+#######################################
+for i in "$@"
+do
+case $i in 
+    -i=*|--id=*)
+      ID="${i#*=}"
+      shift #past argument=value
+    ;;
+    -i*|--id*)
+      ID="$2"
+      shift 2
+    ;;
+    -t=*|--tag=*)
+      TAG="${i#*=}"
+      shift
+    ;;
+    -t*|--tag*)
+      TAG="$2"
+      shift
+    ;;
+esac
+done
 
-echo "Updating local repository..."
-git pull
+echo "ID $ID"
+echo "TAG $TAG"
+exit
+#######################################
+echo "Cloning repo: $ID into $TARGET_DIR"
 
+git clone --recursive git@github.com:$ID.git $TARGET_DIR
 
-CONTAINERS=$(docker ps -q)
+echo "Moving into repo..."
+cd $TARGET_DIR
 
-if [ -n "$CONTAINERS" ]; then
-    echo "Stoping running containers $CONTAINERS"
-    ! docker stop $CONTAINERS
-else
-    echo "No containers to remove."
-fi
+echo "docker build -t $ID..."
+docker build --rm -t $ID .
 
-echo "docker build goliatone/$ID..."
-docker build --rm -t goliatone/$ID .
+echo "docker push $ID:$TAG..."
+docker push $ID:$TAG
 
-echo "docker push goliatone/$ID..."
-docker push goliatone/$ID:$TAG
+echo "Cleaning up trash..."
+rm -r $TARGET_DIR
