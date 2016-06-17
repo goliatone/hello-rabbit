@@ -35,8 +35,8 @@ echo "TAG $TAG"
 #######################################
 echo "Cloning repo: $ID into $TARGET_DIR"
 
-git clone --recursive git@github.com:$ID.git $TARGET_DIR
-#git clone --recursive https://github.com/$ID.git $TARGET_DIR
+#git clone --recursive git@github.com:$ID.git $TARGET_DIR
+git clone --recursive https://github.com/$ID.git $TARGET_DIR
 
 if [ $? -ne 0 ]; then
     echo "Git clone failed... move on"
