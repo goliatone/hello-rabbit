@@ -1,12 +1,12 @@
 #!/bin/bash
 
+#######################################
+# GET FROM CLI ARGUMENTS
+#######################################
 ID=goliatone/hello-rabbit
 TAG=latest
 TARGET_DIR=/tmp/$(cat /proc/sys/kernel/random/uuid)
 
-#######################################
-# GET CLI ARGUMENTS
-#######################################
 for i in "$@"
 do
 case $i in 
@@ -35,10 +35,20 @@ echo "TAG $TAG"
 #######################################
 echo "Cloning repo: $ID into $TARGET_DIR"
 
-git clone --recursive git@github.com:$ID.git $TARGET_DIR
+git clone --recursive https://github.com/$ID.git $TARGET_DIR
 
 echo "Moving into repo..."
 cd $TARGET_DIR
+
+
+#CONTAINERS=$(docker ps -q)
+
+#if [ -n "$CONTAINERS" ]; then
+#    echo "Stoping running containers $CONTAINERS"
+#    ! docker stop $CONTAINERS
+#else
+#    echo "No containers to remove."
+#fi
 
 echo "docker build -t $ID..."
 docker build --rm -t $ID .
